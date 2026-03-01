@@ -17,12 +17,29 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       toast.error(error.message);
+      setLoading(false);
+      return;
+    }
+
+    // Fetch roles to redirect appropriately
+    const { data: rolesData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+
+    const roles = rolesData?.map((r: any) => r.role) ?? [];
+
+    toast.success("Logged in successfully!");
+
+    if (roles.includes("admin")) {
+      navigate("/admin");
+    } else if (roles.includes("delivery_boy")) {
+      navigate("/delivery");
     } else {
-      toast.success("Logged in successfully!");
       navigate("/");
     }
     setLoading(false);

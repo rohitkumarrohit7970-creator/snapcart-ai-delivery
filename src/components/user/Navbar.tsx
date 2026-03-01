@@ -1,11 +1,26 @@
-import { ShoppingCart, Search, User, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ShoppingCart, Search, User, MapPin, LogOut, LogIn } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
   const itemCount = useCartStore((s) => s.itemCount());
+  const { user, profile, hasRole, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-card">
@@ -34,11 +49,39 @@ export function Navbar() {
             <span className="text-sm">Deliver to</span>
           </Button>
 
-          <Link to="/orders">
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/orders")}>My Orders</DropdownMenuItem>
+                {hasRole("admin") && (
+                  <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Panel</DropdownMenuItem>
+                )}
+                {hasRole("delivery_boy") && (
+                  <DropdownMenuItem onClick={() => navigate("/delivery")}>Delivery Panel</DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/login">
+              <Button variant="ghost" size="sm" className="gap-1">
+                <LogIn className="h-4 w-4" /> Sign In
+              </Button>
+            </Link>
+          )}
 
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">

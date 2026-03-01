@@ -1,11 +1,12 @@
-import { categories } from "@/lib/mock-data";
+import type { DbCategory } from "@/hooks/useProducts";
 
 interface CategoryBarProps {
+  categories: DbCategory[];
   selected: string;
   onSelect: (id: string) => void;
 }
 
-export function CategoryBar({ selected, onSelect }: CategoryBarProps) {
+export function CategoryBar({ categories, selected, onSelect }: CategoryBarProps) {
   return (
     <div className="flex gap-3 overflow-x-auto py-4 px-1 scrollbar-hide">
       <button
