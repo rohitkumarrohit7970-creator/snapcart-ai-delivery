@@ -1,11 +1,56 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/user/Navbar";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { useState } from "react";
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, total, clearCart } = useCartStore();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [placing, setPlacing] = useState(false);
+
+  const handlePlaceOrder = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setPlacing(true);
+    try {
+      // Create order
+      const { data: order, error: orderErr } = await supabase
+        .from("orders")
+        .insert({ user_id: user.id, total_amount: total(), status: "pending" })
+        .select()
+        .single();
+
+      if (orderErr) throw orderErr;
+
+      // Create order items
+      const orderItems = items.map((i) => ({
+        order_id: order.id,
+        product_id: i.product.id,
+        product_name: i.product.name,
+        quantity: i.quantity,
+        price: i.product.price,
+      }));
+
+      const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
+      if (itemsErr) throw itemsErr;
+
+      clearCart();
+      toast.success("Order placed successfully!");
+      navigate("/orders");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to place order");
+    } finally {
+      setPlacing(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -75,8 +120,8 @@ const Cart = () => {
               <span className="text-foreground">₹{total()}</span>
             </div>
           </div>
-          <Button className="w-full mt-4" size="lg">
-            Place Order • ₹{total()}
+          <Button className="w-full mt-4" size="lg" onClick={handlePlaceOrder} disabled={placing}>
+            {placing ? "Placing Order..." : `Place Order • ₹${total()}`}
           </Button>
         </div>
       </main>
