@@ -1,73 +1,92 @@
-# Welcome to your Lovable project
+# 🛒 SnapCart — Smart Grocery Delivery Platform
 
-## Project info
+SnapCart is a full-stack grocery delivery web application with role-based dashboards for **Users**, **Delivery Heroes**, and **Admins**. Built with React, TypeScript, and Lovable Cloud.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+### 👤 User Portal
+- Browse & search grocery products by category
+- Add items to cart and place orders
+- Real-time order tracking
+- Manage saved delivery addresses
+- AI-powered grocery chatbot assistant
+- Raise support tickets & complaints
+- Product reviews & ratings
+- Emergency Medikit essentials
 
-**Use Lovable**
+### 🚚 Delivery Hero Dashboard
+- View and manage assigned deliveries
+- Live map with delivery route tracking
+- Update order status in real-time
+- Dashboard with delivery stats
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 🛡️ Admin Dashboard
+- Overview dashboard with key metrics (orders, revenue, users, stock alerts)
+- Full order history with delivery hero assignments
+- User management with purchase history insights
+- Product inventory management
+- Complaints management with admin responses
+- Support chat monitoring
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+| Layer        | Technology                        |
+|--------------|-----------------------------------|
+| Frontend     | React 18, TypeScript, Vite        |
+| Styling      | Tailwind CSS, shadcn/ui           |
+| State        | Zustand, TanStack React Query     |
+| Routing      | React Router v6                   |
+| Maps         | Leaflet / React Leaflet           |
+| Backend      | Lovable Cloud                     |
+| Auth         | Email/password with role-based access |
+| AI           | Edge functions with Lovable AI    |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🔐 Role-Based Access
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+| Role          | Routes                     |
+|---------------|-----------------------------|
+| User          | `/`, `/cart`, `/orders`, `/support`, `/addresses` |
+| Delivery Hero | `/delivery`, `/delivery/orders`, `/delivery/map`  |
+| Admin         | `/admin`, `/admin/products`, `/admin/orders`, `/admin/users`, `/admin/complaints`, `/admin/support` |
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Roles are stored in a dedicated `user_roles` table and enforced via RLS policies and protected routes.
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## 🚀 Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+4. Sign up on the `/welcome` page and select your role
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── layouts/          # AdminLayout, DeliveryLayout
+│   ├── ui/               # shadcn/ui components
+│   └── user/             # Navbar, ProductCard, CategoryBar, GroceryChatbot
+├── hooks/                # useAuth, useProducts, useAddresses, etc.
+├── lib/                  # Zustand stores, mock data, utilities
+├── pages/
+│   ├── admin/            # Admin dashboard pages
+│   ├── auth/             # Login & Register
+│   └── delivery/         # Delivery hero pages
+└── integrations/         # Cloud client & types
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📄 License
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Private project — all rights reserved.
