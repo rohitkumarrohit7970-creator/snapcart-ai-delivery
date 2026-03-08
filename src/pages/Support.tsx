@@ -73,7 +73,7 @@ export default function Support() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [newSubject, setNewSubject] = useState("");
+  const [newMessage, setNewMessage] = useState("");
   const [newIssueType, setNewIssueType] = useState("general");
   const [newOrderId, setNewOrderId] = useState("");
   const [orders, setOrders] = useState<{ id: string; total_amount: number; created_at: string }[]>([]);
@@ -136,22 +136,31 @@ export default function Support() {
   }, [user, showNew]);
 
   const createConversation = async () => {
-    if (!user || !newSubject.trim()) return;
+    if (!user || !newMessage.trim()) return;
+    const msgText = newMessage.trim();
+    const subject = msgText.length > 60 ? msgText.slice(0, 57) + "..." : msgText;
     const { data, error } = await supabase
       .from("support_conversations")
       .insert({
         user_id: user.id,
-        subject: newSubject.trim(),
+        subject,
         issue_type: newIssueType,
         order_id: newOrderId || null,
       })
       .select()
       .single();
     if (error) { toast.error(error.message); return; }
+    // Send the first message
+    await supabase.from("support_messages").insert({
+      conversation_id: (data as Conversation).id,
+      sender_id: user.id,
+      sender_role: "user",
+      content: msgText,
+    });
     setConversations((prev) => [data as Conversation, ...prev]);
     setActiveConvo(data as Conversation);
     setShowNew(false);
-    setNewSubject("");
+    setNewMessage("");
     setNewIssueType("general");
     setNewOrderId("");
   };
@@ -342,16 +351,16 @@ export default function Support() {
               </div>
             )}
             <div>
-              <label className="text-sm font-medium text-foreground">Subject</label>
-              <input
-                type="text"
-                value={newSubject}
-                onChange={(e) => setNewSubject(e.target.value)}
-                placeholder="Brief description of your issue"
-                className="mt-1.5 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              <label className="text-sm font-medium text-foreground">Your Message</label>
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Describe your issue..."
+                rows={3}
+                className="mt-1.5 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
               />
             </div>
-            <Button onClick={createConversation} className="w-full" disabled={!newSubject.trim()}>
+            <Button onClick={createConversation} className="w-full" disabled={!newMessage.trim()}>
               Start Conversation
             </Button>
           </div>
