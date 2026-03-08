@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
 import Support from "./pages/Support";
+import Addresses from "./pages/Addresses";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AdminLayout from "./components/layouts/AdminLayout";
