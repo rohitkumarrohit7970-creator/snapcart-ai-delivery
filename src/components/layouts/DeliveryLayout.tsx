@@ -1,7 +1,9 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, MapPin, LogOut, Menu } from "lucide-react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { LayoutDashboard, Package, MapPin, LogOut, Menu, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const navItems = [
   { label: "Dashboard", path: "/delivery", icon: LayoutDashboard },
@@ -11,7 +13,14 @@ const navItems = [
 
 export default function DeliveryLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
+    navigate("/welcome");
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -47,14 +56,21 @@ export default function DeliveryLayout() {
           })}
         </nav>
 
-        <div className="p-2 border-t">
+        <div className="p-2 border-t space-y-1">
           <Link
             to="/welcome"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
           >
-            <LogOut className="h-4 w-4 shrink-0" />
+            <Store className="h-4 w-4 shrink-0" />
             {!collapsed && <span>Back to Store</span>}
           </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors w-full"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </button>
         </div>
       </aside>
 
