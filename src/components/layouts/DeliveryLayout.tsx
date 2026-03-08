@@ -13,7 +13,14 @@ const navItems = [
 
 export default function DeliveryLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out successfully");
+    navigate("/welcome");
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
