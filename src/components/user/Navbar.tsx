@@ -1,9 +1,12 @@
-import { ShoppingCart, Search, User, MapPin, LogOut, LogIn } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ShoppingCart, Search, User, MapPin, LogOut, LogIn, Navigation, ChevronDown, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocationStore } from "@/lib/location-store";
+import { useAddresses } from "@/hooks/useAddresses";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,11 +14,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export function Navbar() {
   const itemCount = useCartStore((s) => s.itemCount());
   const { user, profile, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
+  const {
+    address: detectedAddress,
+    loading: locLoading,
+    selectedAddressLabel,
+    detectLocation,
+    setSelectedAddress,
+  } = useLocationStore();
+  const { data: addresses = [] } = useAddresses();
+  const [locOpen, setLocOpen] = useState(false);
+
+  // Auto-detect on mount if no address selected
+  useEffect(() => {
+    if (!detectedAddress && !selectedAddressLabel && user) {
+      const defaultAddr = addresses.find((a) => a.is_default);
+      if (defaultAddr) {
+        setSelectedAddress(defaultAddr.id, defaultAddr.label);
+      }
+    }
+  }, [addresses, user]);
+
+  const displayLocation = selectedAddressLabel
+    ? selectedAddressLabel
+    : detectedAddress
+    ? detectedAddress
+    : "Set location";
 
   const handleSignOut = async () => {
     await signOut();
@@ -44,10 +77,87 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden sm:flex gap-1 text-muted-foreground">
-            <MapPin className="h-4 w-4" />
-            <span className="text-sm">Deliver to</span>
-          </Button>
+          {/* Deliver To */}
+          <Popover open={locOpen} onOpenChange={setLocOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="hidden sm:flex gap-1 text-muted-foreground max-w-[180px]">
+                <MapPin className="h-4 w-4 shrink-0 text-primary" />
+                <span className="text-sm truncate">{locLoading ? "Detecting..." : displayLocation}</span>
+                <ChevronDown className="h-3 w-3 shrink-0" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-72 p-0">
+              <div className="p-3 border-b">
+                <p className="text-sm font-semibold text-foreground">Deliver to</p>
+              </div>
+
+              {/* Detect location */}
+              <button
+                onClick={() => {
+                  detectLocation();
+                  setLocOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-secondary/50 transition-colors"
+              >
+                <Navigation className="h-4 w-4 text-primary" />
+                <div className="text-left">
+                  <p className="font-medium text-foreground">Use current location</p>
+                  <p className="text-xs text-muted-foreground">Auto-detect via GPS</p>
+                </div>
+              </button>
+
+              {detectedAddress && !selectedAddressLabel && (
+                <div className="px-3 py-2 bg-primary/5 border-y">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <p className="text-xs text-primary font-medium truncate">{detectedAddress}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Saved addresses */}
+              {addresses.length > 0 && (
+                <div className="border-t">
+                  <p className="px-3 pt-2 pb-1 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                    Saved Addresses
+                  </p>
+                  {addresses.map((addr) => (
+                    <button
+                      key={addr.id}
+                      onClick={() => {
+                        setSelectedAddress(addr.id, addr.label);
+                        setLocOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-secondary/50 transition-colors ${
+                        addr.id === useLocationStore.getState().selectedAddressId ? "bg-secondary" : ""
+                      }`}
+                    >
+                      <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div className="text-left min-w-0">
+                        <p className="font-medium text-foreground text-xs">{addr.label}</p>
+                        <p className="text-[11px] text-muted-foreground truncate">{addr.full_address}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Manage addresses */}
+              <div className="border-t p-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start gap-2 text-primary"
+                  onClick={() => {
+                    setLocOpen(false);
+                    navigate("/addresses");
+                  }}
+                >
+                  <Plus className="h-4 w-4" /> Manage Addresses
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
 
           {user ? (
             <DropdownMenu>
@@ -63,6 +173,7 @@ export function Navbar() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/orders")}>My Orders</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/addresses")}>My Addresses</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/support")}>Support</DropdownMenuItem>
                 {hasRole("admin") && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Panel</DropdownMenuItem>
