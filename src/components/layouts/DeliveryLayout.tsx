@@ -1,7 +1,9 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Package, MapPin, LogOut, Menu } from "lucide-react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { LayoutDashboard, Package, MapPin, LogOut, Menu, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const navItems = [
   { label: "Dashboard", path: "/delivery", icon: LayoutDashboard },
