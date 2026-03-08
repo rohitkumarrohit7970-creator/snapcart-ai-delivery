@@ -3,6 +3,8 @@ import { Navbar } from "@/components/user/Navbar";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocationStore } from "@/lib/location-store";
+import { useAddresses } from "@/hooks/useAddresses";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
@@ -13,24 +15,42 @@ const Cart = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [placing, setPlacing] = useState(false);
+  const { address: detectedAddress, selectedAddressId } = useLocationStore();
+  const { data: addresses = [] } = useAddresses();
+
+  const getDeliveryAddress = (): string => {
+    if (selectedAddressId) {
+      const saved = addresses.find((a) => a.id === selectedAddressId);
+      if (saved) {
+        return [saved.flat_building, saved.full_address, saved.landmark, saved.city, saved.pincode]
+          .filter(Boolean)
+          .join(", ");
+      }
+    }
+    if (detectedAddress) return detectedAddress;
+    return "";
+  };
 
   const handlePlaceOrder = async () => {
     if (!user) {
       navigate("/login");
       return;
     }
+    const deliveryAddress = getDeliveryAddress();
+    if (!deliveryAddress) {
+      toast.error("Please set a delivery address before placing the order");
+      return;
+    }
     setPlacing(true);
     try {
-      // Create order
       const { data: order, error: orderErr } = await supabase
         .from("orders")
-        .insert({ user_id: user.id, total_amount: total(), status: "pending" })
+        .insert({ user_id: user.id, total_amount: total(), status: "pending", address: deliveryAddress })
         .select()
         .single();
 
       if (orderErr) throw orderErr;
 
-      // Create order items
       const orderItems = items.map((i) => ({
         order_id: order.id,
         product_id: i.product.id,
