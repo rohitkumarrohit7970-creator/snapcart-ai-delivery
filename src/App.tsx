@@ -55,6 +55,9 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="support" element={<AdminSupport />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="complaints" element={<AdminComplaints />} />
             </Route>
 
             {/* Delivery */}
