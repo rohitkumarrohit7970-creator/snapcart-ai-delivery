@@ -30,6 +30,7 @@ export const categories = [
   { id: "vegetables", name: "Vegetables", icon: "🥦", color: "bg-primary/10" },
   { id: "milk", name: "Milk & Dairy", icon: "🥛", color: "bg-info/10" },
   { id: "essentials", name: "Daily Essentials", icon: "🧴", color: "bg-accent/10" },
+  { id: "medikit", name: "Emergency Medikit", icon: "🩹", color: "bg-destructive/10" },
 ];
 
 export const products: Product[] = [
