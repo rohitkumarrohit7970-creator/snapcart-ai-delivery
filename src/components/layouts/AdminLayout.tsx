@@ -8,9 +8,12 @@ import {
   BarChart3,
   LogOut,
   Menu,
+  Store,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
