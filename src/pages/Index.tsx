@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/user/Navbar";
 import { CategoryBar } from "@/components/user/CategoryBar";
 import { ProductCard } from "@/components/user/ProductCard";
+import { GroceryChatbot } from "@/components/user/GroceryChatbot";
 import { useProducts, useCategories } from "@/hooks/useProducts";
 import { Search } from "lucide-react";
 
@@ -66,6 +67,8 @@ const Index = () => {
           </div>
         )}
       </main>
+
+      <GroceryChatbot />
     </div>
   );
 };
