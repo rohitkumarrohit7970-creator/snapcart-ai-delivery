@@ -67,6 +67,8 @@ const Index = () => {
           </div>
         )}
       </main>
+
+      <GroceryChatbot />
     </div>
   );
 };
