@@ -136,22 +136,31 @@ export default function Support() {
   }, [user, showNew]);
 
   const createConversation = async () => {
-    if (!user || !newSubject.trim()) return;
+    if (!user || !newMessage.trim()) return;
+    const msgText = newMessage.trim();
+    const subject = msgText.length > 60 ? msgText.slice(0, 57) + "..." : msgText;
     const { data, error } = await supabase
       .from("support_conversations")
       .insert({
         user_id: user.id,
-        subject: newSubject.trim(),
+        subject,
         issue_type: newIssueType,
         order_id: newOrderId || null,
       })
       .select()
       .single();
     if (error) { toast.error(error.message); return; }
+    // Send the first message
+    await supabase.from("support_messages").insert({
+      conversation_id: (data as Conversation).id,
+      sender_id: user.id,
+      sender_role: "user",
+      content: msgText,
+    });
     setConversations((prev) => [data as Conversation, ...prev]);
     setActiveConvo(data as Conversation);
     setShowNew(false);
-    setNewSubject("");
+    setNewMessage("");
     setNewIssueType("general");
     setNewOrderId("");
   };
