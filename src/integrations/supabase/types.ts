@@ -425,6 +425,57 @@ export type Database = {
           },
         ]
       }
+      user_addresses: {
+        Row: {
+          city: string | null
+          created_at: string
+          flat_building: string | null
+          full_address: string
+          id: string
+          is_default: boolean
+          label: string
+          landmark: string | null
+          latitude: number | null
+          longitude: number | null
+          pincode: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          flat_building?: string | null
+          full_address: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          landmark?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          pincode?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          flat_building?: string | null
+          full_address?: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          landmark?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          pincode?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
