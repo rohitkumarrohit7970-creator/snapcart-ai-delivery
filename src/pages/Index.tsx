@@ -12,12 +12,12 @@ const Index = () => {
   const { hasRole } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState("");
-
-  // Redirect delivery heroes to their dashboard
-  if (hasRole("delivery_boy")) return <Navigate to="/delivery" replace />;
-  if (hasRole("admin")) return <Navigate to="/admin" replace />;
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: categories = [] } = useCategories();
+
+  // Redirect delivery heroes / admins to their dashboard
+  if (hasRole("delivery_boy")) return <Navigate to="/delivery" replace />;
+  if (hasRole("admin")) return <Navigate to="/admin" replace />;
 
   const filtered = products.filter((p) => {
     const matchCat = selectedCategory === "all" || p.category_id === selectedCategory;
