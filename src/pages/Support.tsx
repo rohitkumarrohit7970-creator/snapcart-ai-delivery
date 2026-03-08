@@ -73,7 +73,7 @@ export default function Support() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [newSubject, setNewSubject] = useState("");
+  const [newMessage, setNewMessage] = useState("");
   const [newIssueType, setNewIssueType] = useState("general");
   const [newOrderId, setNewOrderId] = useState("");
   const [orders, setOrders] = useState<{ id: string; total_amount: number; created_at: string }[]>([]);
