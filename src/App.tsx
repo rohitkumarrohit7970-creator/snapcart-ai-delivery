@@ -56,6 +56,7 @@ const App = () => (
             {/* Delivery */}
             <Route path="/delivery" element={<ProtectedRoute requiredRole="delivery_boy"><DeliveryLayout /></ProtectedRoute>}>
               <Route index element={<DeliveryDashboard />} />
+              <Route path="map" element={<DeliveryMap />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
