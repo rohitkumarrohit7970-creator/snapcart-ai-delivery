@@ -58,10 +58,10 @@ export default function Landing() {
     setLoading(true);
 
     if (authMode === "register") {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name } },
+        options: { data: { full_name: name, role: selectedRole } },
       });
 
       if (error) {
@@ -71,6 +71,12 @@ export default function Landing() {
       }
 
       toast.success("Account created! You're now signed in.");
+
+      // Redirect based on selected role
+      const dest = selectedRole === "admin" ? "/admin" : selectedRole === "delivery_boy" ? "/delivery" : "/";
+      navigate(dest);
+      setLoading(false);
+      return;
     } else {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -80,7 +86,6 @@ export default function Landing() {
         return;
       }
 
-      // Fetch roles for redirect
       const { data: rolesData } = await supabase
         .from("user_roles")
         .select("role")
@@ -105,10 +110,6 @@ export default function Landing() {
       setLoading(false);
       return;
     }
-
-    // After register, redirect based on selected role (new users always get 'user' role)
-    navigate("/");
-    setLoading(false);
   };
 
   const activeRole = roles.find((r) => r.key === selectedRole)!;
