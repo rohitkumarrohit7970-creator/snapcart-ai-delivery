@@ -17,6 +17,9 @@ import AdminLayout from "./components/layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminSupport from "./pages/admin/AdminSupport";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminComplaints from "./pages/admin/AdminComplaints";
 import DeliveryLayout from "./components/layouts/DeliveryLayout";
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 import DeliveryMap from "./pages/delivery/DeliveryMap";
@@ -52,6 +55,9 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="support" element={<AdminSupport />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="complaints" element={<AdminComplaints />} />
             </Route>
 
             {/* Delivery */}
