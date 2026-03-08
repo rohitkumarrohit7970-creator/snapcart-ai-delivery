@@ -63,6 +63,7 @@ export function Navbar() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/orders")}>My Orders</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/support")}>Support</DropdownMenuItem>
                 {hasRole("admin") && (
                   <DropdownMenuItem onClick={() => navigate("/admin")}>Admin Panel</DropdownMenuItem>
                 )}

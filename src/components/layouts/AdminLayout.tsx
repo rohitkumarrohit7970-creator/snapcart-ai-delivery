@@ -16,9 +16,9 @@ const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
   { label: "Products", path: "/admin/products", icon: Package },
   { label: "Orders", path: "/admin/orders", icon: ShoppingCart },
+  { label: "Support Chats", path: "/admin/support", icon: MessageSquare },
   { label: "Users", path: "/admin/users", icon: Users },
-  { label: "Complaints", path: "/admin/complaints", icon: MessageSquare },
-  { label: "Analytics", path: "/admin/analytics", icon: BarChart3 },
+  { label: "Complaints", path: "/admin/complaints", icon: BarChart3 },
 ];
 
 export default function AdminLayout() {
