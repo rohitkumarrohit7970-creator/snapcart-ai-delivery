@@ -20,6 +20,7 @@ import AdminSupport from "./pages/admin/AdminSupport";
 import DeliveryLayout from "./components/layouts/DeliveryLayout";
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 import DeliveryMap from "./pages/delivery/DeliveryMap";
+import DeliveryOrders from "./pages/delivery/DeliveryOrders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
