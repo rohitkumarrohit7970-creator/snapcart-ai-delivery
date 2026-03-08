@@ -29,9 +29,12 @@ const App = () => (
         <AuthProvider>
           <Routes>
             {/* Public */}
-            <Route path="/" element={<Index />} />
+            <Route path="/welcome" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* User storefront */}
+            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
 
             {/* Protected user routes */}
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
