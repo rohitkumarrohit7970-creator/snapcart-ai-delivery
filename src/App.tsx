@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
 import Support from "./pages/Support";
+import Addresses from "./pages/Addresses";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AdminLayout from "./components/layouts/AdminLayout";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
             <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+            <Route path="/addresses" element={<ProtectedRoute><Addresses /></ProtectedRoute>} />
 
             {/* Admin */}
             <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminLayout /></ProtectedRoute>}>
