@@ -351,16 +351,16 @@ export default function Support() {
               </div>
             )}
             <div>
-              <label className="text-sm font-medium text-foreground">Subject</label>
-              <input
-                type="text"
-                value={newSubject}
-                onChange={(e) => setNewSubject(e.target.value)}
-                placeholder="Brief description of your issue"
-                className="mt-1.5 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              <label className="text-sm font-medium text-foreground">Your Message</label>
+              <textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Describe your issue..."
+                rows={3}
+                className="mt-1.5 w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
               />
             </div>
-            <Button onClick={createConversation} className="w-full" disabled={!newSubject.trim()}>
+            <Button onClick={createConversation} className="w-full" disabled={!newMessage.trim()}>
               Start Conversation
             </Button>
           </div>
