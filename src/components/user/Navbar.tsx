@@ -170,6 +170,9 @@ export function Navbar() {
                 <div className="px-2 py-1.5">
                   <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
                   <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <Badge variant="secondary" className="mt-1 text-[10px] capitalize">
+                    {hasRole("admin") ? "Admin" : hasRole("delivery_boy") ? "Delivery Hero" : "User"}
+                  </Badge>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/orders")}>My Orders</DropdownMenuItem>

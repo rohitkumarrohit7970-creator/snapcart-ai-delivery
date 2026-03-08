@@ -1,14 +1,21 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { Navbar } from "@/components/user/Navbar";
 import { CategoryBar } from "@/components/user/CategoryBar";
 import { ProductCard } from "@/components/user/ProductCard";
 import { GroceryChatbot } from "@/components/user/GroceryChatbot";
 import { useProducts, useCategories } from "@/hooks/useProducts";
+import { useAuth } from "@/hooks/useAuth";
 import { Search } from "lucide-react";
 
 const Index = () => {
+  const { hasRole } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [search, setSearch] = useState("");
+
+  // Redirect delivery heroes to their dashboard
+  if (hasRole("delivery_boy")) return <Navigate to="/delivery" replace />;
+  if (hasRole("admin")) return <Navigate to="/admin" replace />;
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: categories = [] } = useCategories();
 
