@@ -49,7 +49,7 @@ export default function DeliveryLayout() {
 
         <div className="p-2 border-t">
           <Link
-            to="/"
+            to="/welcome"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
           >
             <LogOut className="h-4 w-4 shrink-0" />
