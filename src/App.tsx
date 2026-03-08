@@ -19,6 +19,7 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminSupport from "./pages/admin/AdminSupport";
 import DeliveryLayout from "./components/layouts/DeliveryLayout";
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import DeliveryMap from "./pages/delivery/DeliveryMap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
             {/* Delivery */}
             <Route path="/delivery" element={<ProtectedRoute requiredRole="delivery_boy"><DeliveryLayout /></ProtectedRoute>}>
               <Route index element={<DeliveryDashboard />} />
+              <Route path="map" element={<DeliveryMap />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
