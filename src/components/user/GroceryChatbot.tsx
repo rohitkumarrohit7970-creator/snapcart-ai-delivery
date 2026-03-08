@@ -218,7 +218,7 @@ export function GroceryChatbot() {
                 <p className="text-sm font-medium">Hi! I'm your grocery assistant 👋</p>
                 <p className="text-xs mt-1">Ask me for meal ideas, recipes, or product suggestions</p>
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
-                  {["What's good for breakfast?", "Suggest healthy snacks", "Help me plan dinner"].map(
+                  {["Build an emergency first aid kit", "What's good for breakfast?", "Suggest healthy snacks", "Help me plan dinner"].map(
                     (q) => (
                       <button
                         key={q}
