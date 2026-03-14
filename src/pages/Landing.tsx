@@ -144,9 +144,9 @@ export default function Landing() {
         </motion.div>
         <motion.p
           className="text-muted-foreground text-center max-w-md mb-10"
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.7 }}
         >
           Fresh groceries delivered in minutes. Choose how you want to get started.
         </motion.p>
