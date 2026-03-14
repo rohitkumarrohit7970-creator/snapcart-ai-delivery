@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag, Truck, ShieldCheck, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -118,17 +119,37 @@ export default function Landing() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl snap-green-gradient">
+        <motion.div
+          className="flex items-center gap-3 mb-2"
+          initial={{ y: -80, opacity: 0, scale: 0.7 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 14, duration: 0.8 }}
+        >
+          <motion.div
+            className="flex h-12 w-12 items-center justify-center rounded-xl snap-green-gradient"
+            initial={{ rotate: -180 }}
+            animate={{ rotate: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.3 }}
+          >
             <span className="text-2xl font-bold text-primary-foreground">S</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+          </motion.div>
+          <motion.h1
+            className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight"
+            initial={{ x: -30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
             SnapCart
-          </h1>
-        </div>
-        <p className="text-muted-foreground text-center max-w-md mb-10">
+          </motion.h1>
+        </motion.div>
+        <motion.p
+          className="text-muted-foreground text-center max-w-md mb-10"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
           Fresh groceries delivered in minutes. Choose how you want to get started.
-        </p>
+        </motion.p>
 
         {/* Role selector */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl mb-8">
