@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/user/Navbar";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
@@ -7,16 +7,26 @@ import { useLocationStore } from "@/lib/location-store";
 import { useAddresses } from "@/hooks/useAddresses";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Banknote } from "lucide-react";
+import { useState, useEffect } from "react";
+
+type PaymentMethod = "online" | "cod";
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, total, clearCart } = useCartStore();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [placing, setPlacing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("online");
   const { address: detectedAddress, selectedAddressId } = useLocationStore();
   const { data: addresses = [] } = useAddresses();
+
+  useEffect(() => {
+    if (searchParams.get("payment") === "cancelled") {
+      toast.error("Payment was cancelled. You can try again.");
+    }
+  }, [searchParams]);
 
   const getDeliveryAddress = (): string => {
     if (selectedAddressId) {
@@ -31,6 +41,30 @@ const Cart = () => {
     return "";
   };
 
+  const createOrder = async (status: string) => {
+    const deliveryAddress = getDeliveryAddress();
+    const { data: order, error: orderErr } = await supabase
+      .from("orders")
+      .insert({ user_id: user!.id, total_amount: total(), status, address: deliveryAddress })
+      .select()
+      .single();
+
+    if (orderErr) throw orderErr;
+
+    const orderItems = items.map((i) => ({
+      order_id: order.id,
+      product_id: i.product.id,
+      product_name: i.product.name,
+      quantity: i.quantity,
+      price: i.product.price,
+    }));
+
+    const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
+    if (itemsErr) throw itemsErr;
+
+    return order;
+  };
+
   const handlePlaceOrder = async () => {
     if (!user) {
       navigate("/login");
@@ -43,28 +77,33 @@ const Cart = () => {
     }
     setPlacing(true);
     try {
-      const { data: order, error: orderErr } = await supabase
-        .from("orders")
-        .insert({ user_id: user.id, total_amount: total(), status: "pending", address: deliveryAddress })
-        .select()
-        .single();
+      if (paymentMethod === "cod") {
+        await createOrder("pending");
+        clearCart();
+        toast.success("Order placed successfully! Pay on delivery.");
+        navigate("/orders");
+      } else {
+        // Create order with pending_payment status, then redirect to Stripe
+        const order = await createOrder("pending_payment");
 
-      if (orderErr) throw orderErr;
+        const stripeItems = items.map((i) => ({
+          name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+        }));
 
-      const orderItems = items.map((i) => ({
-        order_id: order.id,
-        product_id: i.product.id,
-        product_name: i.product.name,
-        quantity: i.quantity,
-        price: i.product.price,
-      }));
+        const { data, error } = await supabase.functions.invoke("create-checkout", {
+          body: { items: stripeItems, orderId: order.id },
+        });
 
-      const { error: itemsErr } = await supabase.from("order_items").insert(orderItems);
-      if (itemsErr) throw itemsErr;
-
-      clearCart();
-      toast.success("Order placed successfully!");
-      navigate("/orders");
+        if (error) throw new Error(error.message || "Payment initiation failed");
+        if (data?.url) {
+          clearCart();
+          window.location.href = data.url;
+        } else {
+          throw new Error("No checkout URL received");
+        }
+      }
     } catch (err: any) {
       toast.error(err.message || "Failed to place order");
     } finally {
@@ -125,7 +164,52 @@ const Cart = () => {
           ))}
         </div>
 
+        {/* Payment Method Selection */}
         <div className="mt-6 rounded-xl border bg-card p-5 snap-card-shadow">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Payment Method</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setPaymentMethod("online")}
+              className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all snap-card-hover ${
+                paymentMethod === "online"
+                  ? "border-primary bg-secondary shadow-sm"
+                  : "border-border bg-card hover:border-muted-foreground/30"
+              }`}
+            >
+              <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${
+                paymentMethod === "online" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              }`}>
+                <CreditCard className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Pay Online</p>
+                <p className="text-xs text-muted-foreground">Card, UPI, Wallet</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setPaymentMethod("cod")}
+              className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all snap-card-hover ${
+                paymentMethod === "cod"
+                  ? "border-primary bg-secondary shadow-sm"
+                  : "border-border bg-card hover:border-muted-foreground/30"
+              }`}
+            >
+              <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${
+                paymentMethod === "cod" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              }`}>
+                <Banknote className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Cash on Delivery</p>
+                <p className="text-xs text-muted-foreground">Pay when delivered</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Order Summary */}
+        <div className="mt-4 rounded-xl border bg-card p-5 snap-card-shadow">
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
@@ -140,8 +224,13 @@ const Cart = () => {
               <span className="text-foreground">₹{total()}</span>
             </div>
           </div>
-          <Button className="w-full mt-4" size="lg" onClick={handlePlaceOrder} disabled={placing}>
-            {placing ? "Placing Order..." : `Place Order • ₹${total()}`}
+          <Button className="w-full mt-4 gap-2" size="lg" onClick={handlePlaceOrder} disabled={placing}>
+            {paymentMethod === "online" ? <CreditCard className="h-4 w-4" /> : <Banknote className="h-4 w-4" />}
+            {placing
+              ? "Processing..."
+              : paymentMethod === "online"
+              ? `Pay Online • ₹${total()}`
+              : `Place COD Order • ₹${total()}`}
           </Button>
         </div>
       </main>
