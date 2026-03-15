@@ -12,6 +12,9 @@ export interface DbProduct {
   description: string;
   unit: string;
   is_active: boolean;
+  variety: string | null;
+  shelf_life: string | null;
+  best_before_days: number | null;
 }
 
 export interface DbCategory {

@@ -229,6 +229,7 @@ export type Database = {
       }
       products: {
         Row: {
+          best_before_days: number | null
           category_id: string | null
           created_at: string
           description: string | null
@@ -238,10 +239,13 @@ export type Database = {
           name: string
           original_price: number | null
           price: number
+          shelf_life: string | null
           stock: number
           unit: string | null
+          variety: string | null
         }
         Insert: {
+          best_before_days?: number | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -251,10 +255,13 @@ export type Database = {
           name: string
           original_price?: number | null
           price?: number
+          shelf_life?: string | null
           stock?: number
           unit?: string | null
+          variety?: string | null
         }
         Update: {
+          best_before_days?: number | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -264,8 +271,10 @@ export type Database = {
           name?: string
           original_price?: number | null
           price?: number
+          shelf_life?: string | null
           stock?: number
           unit?: string | null
+          variety?: string | null
         }
         Relationships: [
           {
