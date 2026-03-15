@@ -99,7 +99,9 @@ const Cart = () => {
         if (error) throw new Error(error.message || "Payment initiation failed");
         if (data?.url) {
           clearCart();
-          window.location.href = data.url;
+          window.open(data.url, "_blank");
+          toast.success("Stripe checkout opened in a new tab. Complete your payment there.");
+          navigate("/orders");
         } else {
           throw new Error("No checkout URL received");
         }
