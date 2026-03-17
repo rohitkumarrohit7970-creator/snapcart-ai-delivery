@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import basketIcon from "@/assets/basket-icon.png";
+import deliveryBikeIcon from "@/assets/delivery-bike-icon.png";
 
 const roles = [
   {
@@ -150,6 +152,17 @@ export default function Landing() {
         >
           Fresh groceries delivered in minutes. Choose how you want to get started.
         </motion.p>
+
+        {/* Basket & Delivery icons */}
+        <motion.div
+          className="flex items-center justify-center gap-8 mb-8"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.9, type: "spring", stiffness: 120 }}
+        >
+          <img src={basketIcon} alt="Grocery basket" className="h-20 w-20 object-contain" />
+          <img src={deliveryBikeIcon} alt="Delivery bike" className="h-20 w-20 object-contain" />
+        </motion.div>
 
         {/* Role selector */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl mb-8">
