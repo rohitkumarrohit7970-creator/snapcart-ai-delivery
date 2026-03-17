@@ -10,6 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import basketIcon from "@/assets/basket-icon.png";
+import deliveryBikeIcon from "@/assets/delivery-bike-icon.png";
 
 const roles = [
   {
