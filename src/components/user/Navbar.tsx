@@ -67,7 +67,7 @@ export function Navbar() {
           <span className="text-xl font-bold text-foreground">SnapCart</span>
         </Link>
 
-        <div className="hidden flex-1 max-w-md mx-4 md:flex">
+        <div className="hidden flex-1 max-w-md mx-4 md:flex items-center gap-2">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -76,6 +76,7 @@ export function Navbar() {
               className="w-full rounded-lg border bg-background py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
+          <VoiceSearchButton onResult={(text) => { /* Desktop search is display-only for now */ }} />
         </div>
 
         <div className="flex items-center gap-2">
