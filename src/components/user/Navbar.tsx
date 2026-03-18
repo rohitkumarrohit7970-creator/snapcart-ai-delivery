@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart, Search, User, MapPin, LogOut, LogIn, Navigation, ChevronDown, Plus } from "lucide-react";
+import { VoiceSearchButton } from "@/components/user/VoiceSearchButton";
+import { NotificationCenter } from "@/components/user/NotificationCenter";
 import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
