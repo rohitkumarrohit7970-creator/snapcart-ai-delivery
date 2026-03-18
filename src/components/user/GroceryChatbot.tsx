@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, ShoppingCart, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, ShoppingCart, Sparkles, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/cart-store";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { DietModeSelector, type DietMode } from "./DietModeSelector";
+import { VoiceSearchButton } from "./VoiceSearchButton";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -76,6 +78,8 @@ export function GroceryChatbot() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [dietMode, setDietMode] = useState<DietMode>("none");
+  const [showSettings, setShowSettings] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const addItem = useCartStore((s) => s.addItem);
@@ -126,7 +130,7 @@ export function GroceryChatbot() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: allMessages }),
+        body: JSON.stringify({ messages: allMessages, dietMode }),
       });
 
       if (!resp.ok) {
@@ -197,18 +201,33 @@ export function GroceryChatbot() {
       {/* Chat Panel */}
       {open && (
         <div className="fixed bottom-24 right-6 z-50 flex w-[360px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border bg-card shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-200"
-          style={{ height: "min(520px, calc(100vh - 8rem))" }}
+          style={{ height: "min(560px, calc(100vh - 8rem))" }}
         >
           {/* Header */}
-          <div className="flex items-center gap-3 border-b bg-primary/5 px-4 py-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="h-5 w-5 text-primary" />
+          <div className="flex items-center justify-between border-b bg-primary/5 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Grocery Assistant</h3>
+                <p className="text-xs text-muted-foreground">
+                  {dietMode !== "none" ? `🥗 ${dietMode.replace("_", " ")} mode` : "Ask me for recommendations!"}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">Grocery Assistant</h3>
-              <p className="text-xs text-muted-foreground">Ask me for recommendations!</p>
-            </div>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowSettings(!showSettings)}>
+              <Settings2 className="h-4 w-4" />
+            </Button>
           </div>
+
+          {/* Diet mode settings */}
+          {showSettings && (
+            <div className="border-b bg-muted/30 px-4 py-3">
+              <p className="text-xs font-medium text-muted-foreground mb-2">🥗 Diet Preference</p>
+              <DietModeSelector selected={dietMode} onSelect={setDietMode} />
+            </div>
+          )}
 
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -262,6 +281,7 @@ export function GroceryChatbot() {
             }}
             className="flex items-center gap-2 border-t bg-background p-3"
           >
+            <VoiceSearchButton onResult={(text) => setInput(text)} />
             <input
               ref={inputRef}
               type="text"

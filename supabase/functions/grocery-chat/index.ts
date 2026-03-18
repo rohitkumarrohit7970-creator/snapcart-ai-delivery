@@ -7,15 +7,22 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const DIET_PROMPTS: Record<string, string> = {
+  gym: "The user is on a GYM/FITNESS diet. Prioritize high-protein foods, lean meats, eggs, nuts, protein-rich items. Suggest pre/post workout meals. Mention protein and calorie content when possible.",
+  diabetic: "The user has DIABETES. Avoid high-sugar products. Prioritize low-glycemic foods, whole grains, green vegetables. Always warn about sugar content. Suggest diabetic-friendly alternatives.",
+  veg: "The user is VEGETARIAN. Only suggest vegetarian products. No meat, fish, or eggs. Focus on plant-based proteins, lentils, paneer, tofu, vegetables.",
+  weight_loss: "The user is on a WEIGHT LOSS diet. Suggest low-calorie, high-fiber foods. Avoid high-fat and processed items. Mention approximate calorie counts. Suggest portion control tips.",
+  heart_healthy: "The user wants HEART-HEALTHY food. Suggest low-sodium, low-cholesterol items. Prioritize omega-3 rich foods, whole grains, fruits, vegetables. Avoid processed/fried items.",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { messages, dietMode } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // Fetch available products to give context to AI
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -38,8 +45,13 @@ serve(async (req) => {
       unit: p.unit,
       category: catMap[p.category_id] || "Other",
       image: p.image,
+      description: p.description,
       inStock: p.stock > 0,
     }));
+
+    const dietInstruction = dietMode && dietMode !== "none" && DIET_PROMPTS[dietMode]
+      ? `\n\nDIET MODE ACTIVE: ${DIET_PROMPTS[dietMode]}`
+      : "";
 
     const systemPrompt = `You are SnapCart's friendly grocery shopping assistant. Help users find and choose groceries.
 
@@ -54,8 +66,10 @@ RULES:
 4. Be concise, friendly, and helpful. Use emojis sparingly.
 5. If asked about a product not in the catalog, say it's not currently available and suggest alternatives.
 6. Group recommendations logically (e.g., by meal, by category).
-7. **IMPORTANT**: When a user asks about emergencies, first aid, health kits, or safety supplies, ALWAYS proactively recommend relevant items from the "Emergency Medikit" category. Suggest building a complete first aid kit.
-8. When greeting users or when they ask "what's new", mention the Emergency Medikit category as a featured/recommended collection.`;
+7. **IMPORTANT**: When a user asks about emergencies, first aid, health kits, or safety supplies, ALWAYS proactively recommend relevant items from the "Emergency Medikit" category.
+8. When greeting users or when they ask "what's new", mention the Emergency Medikit category as a featured collection.
+9. **NUTRITION**: When suggesting food items, briefly mention key nutritional benefits (e.g., "rich in vitamin C", "high in fiber", "good source of protein").
+10. **HEALTH-AWARE**: If the user mentions any health condition (diabetes, heart issues, weight management), tailor suggestions accordingly even without diet mode.${dietInstruction}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

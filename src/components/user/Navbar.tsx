@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart, Search, User, MapPin, LogOut, LogIn, Navigation, ChevronDown, Plus } from "lucide-react";
+import { VoiceSearchButton } from "@/components/user/VoiceSearchButton";
+import { NotificationCenter } from "@/components/user/NotificationCenter";
 import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -65,7 +67,7 @@ export function Navbar() {
           <span className="text-xl font-bold text-foreground">SnapCart</span>
         </Link>
 
-        <div className="hidden flex-1 max-w-md mx-4 md:flex">
+        <div className="hidden flex-1 max-w-md mx-4 md:flex items-center gap-2">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -74,6 +76,7 @@ export function Navbar() {
               className="w-full rounded-lg border bg-background py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
+          <VoiceSearchButton onResult={(text) => { /* Desktop search is display-only for now */ }} />
         </div>
 
         <div className="flex items-center gap-2">
@@ -197,6 +200,8 @@ export function Navbar() {
               </Button>
             </Link>
           )}
+
+          <NotificationCenter />
 
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">

@@ -4,6 +4,7 @@ import { Navbar } from "@/components/user/Navbar";
 import { CategoryBar } from "@/components/user/CategoryBar";
 import { ProductCard } from "@/components/user/ProductCard";
 import { GroceryChatbot } from "@/components/user/GroceryChatbot";
+import { VoiceSearchButton } from "@/components/user/VoiceSearchButton";
 import { useProducts, useCategories } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
 import { Search } from "lucide-react";
@@ -37,16 +38,19 @@ const Index = () => {
           <p className="mt-2 text-sm opacity-80">Fresh produce, daily essentials & more</p>
         </div>
 
-        {/* Mobile search */}
-        <div className="mt-4 md:hidden relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search for groceries..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border bg-card py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          />
+        {/* Mobile search with voice */}
+        <div className="mt-4 md:hidden relative flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search for groceries..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-lg border bg-card py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <VoiceSearchButton onResult={(text) => setSearch(text)} />
         </div>
 
         {/* Categories */}
