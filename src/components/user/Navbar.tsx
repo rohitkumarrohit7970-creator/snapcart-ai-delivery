@@ -201,6 +201,8 @@ export function Navbar() {
             </Link>
           )}
 
+          <NotificationCenter />
+
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
