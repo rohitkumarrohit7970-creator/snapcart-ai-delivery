@@ -7,6 +7,7 @@ import { GroceryChatbot } from "@/components/user/GroceryChatbot";
 import { VoiceSearchButton } from "@/components/user/VoiceSearchButton";
 import { useProducts, useCategories } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
+import { useSearchStore } from "@/lib/search-store";
 import { Search } from "lucide-react";
 
 const Index = () => {
