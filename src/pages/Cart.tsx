@@ -121,7 +121,7 @@ const Cart = () => {
           <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold text-foreground">Your cart is empty</h2>
           <p className="text-muted-foreground mt-1">Add items to get started</p>
-          <Link to="/">
+          <Link to="/store">
             <Button className="mt-6">Browse Products</Button>
           </Link>
         </div>
