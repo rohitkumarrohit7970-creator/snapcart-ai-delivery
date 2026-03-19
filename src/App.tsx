@@ -38,13 +38,14 @@ const App = () => (
         <AuthProvider>
           <Routes>
             {/* Public */}
+            <Route path="/" element={<Welcome />} />
             <Route path="/get-started" element={<Welcome />} />
             <Route path="/welcome" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             {/* User storefront */}
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/store" element={<ProtectedRoute><Index /></ProtectedRoute>} />
 
             {/* Protected user routes */}
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />

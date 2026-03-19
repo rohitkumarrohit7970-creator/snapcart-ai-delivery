@@ -62,7 +62,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card">
       <div className="container flex h-16 items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/store" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg snap-green-gradient">
             <span className="text-lg font-bold text-primary-foreground">S</span>
           </div>

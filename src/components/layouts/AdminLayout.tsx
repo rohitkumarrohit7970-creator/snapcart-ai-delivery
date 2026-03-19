@@ -72,7 +72,7 @@ export default function AdminLayout() {
 
         <div className="p-2 border-t space-y-1">
           <Link
-            to="/"
+            to="/store"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
           >
             <Store className="h-4 w-4 shrink-0" />

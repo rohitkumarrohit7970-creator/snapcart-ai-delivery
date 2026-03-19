@@ -57,7 +57,7 @@ const Orders = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container max-w-2xl py-6">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+        <Link to="/store" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
 
