@@ -36,6 +36,7 @@ export function Navbar() {
   } = useLocationStore();
   const { data: addresses = [] } = useAddresses();
   const [locOpen, setLocOpen] = useState(false);
+  const { query: navSearch, setQuery: setNavSearch } = useSearchStore();
 
   // Auto-detect on mount if no address selected
   useEffect(() => {
