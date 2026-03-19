@@ -49,9 +49,8 @@ export default function Landing() {
 
   // If already logged in, redirect based on role
   if (user) {
-    const destination = hasRole("admin") ? "/admin" : hasRole("delivery_boy") ? "/delivery" : "/";
-    navigate(destination, { replace: true });
-    return null;
+    const destination = hasRole("admin") ? "/admin" : hasRole("delivery_boy") ? "/delivery" : "/store";
+    return <Navigate to={destination} replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
