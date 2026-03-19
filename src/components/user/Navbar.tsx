@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocationStore } from "@/lib/location-store";
 import { useAddresses } from "@/hooks/useAddresses";
+import { useSearchStore } from "@/lib/search-store";
 import {
   DropdownMenu,
   DropdownMenuContent,
