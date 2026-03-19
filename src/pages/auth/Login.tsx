@@ -40,7 +40,7 @@ export default function Login() {
     } else if (roles.includes("delivery_boy")) {
       navigate("/delivery");
     } else {
-      navigate("/");
+      navigate("/store");
     }
     setLoading(false);
   };

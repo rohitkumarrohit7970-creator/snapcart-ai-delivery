@@ -105,7 +105,7 @@ export default function Landing() {
       } else if (userRoles.includes("delivery_boy")) {
         navigate("/delivery");
       } else {
-        navigate("/");
+        navigate("/store");
       }
 
       setLoading(false);
