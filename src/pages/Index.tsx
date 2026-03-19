@@ -7,12 +7,17 @@ import { GroceryChatbot } from "@/components/user/GroceryChatbot";
 import { VoiceSearchButton } from "@/components/user/VoiceSearchButton";
 import { useProducts, useCategories } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
+import { useSearchStore } from "@/lib/search-store";
 import { Search } from "lucide-react";
 
 const Index = () => {
   const { hasRole } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [search, setSearch] = useState("");
+  const { query: globalSearch, setQuery: setGlobalSearch } = useSearchStore();
+  const [localSearch, setLocalSearch] = useState("");
+  
+  // Combine mobile local search with navbar global search
+  const search = localSearch || globalSearch;
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: categories = [] } = useCategories();
 
@@ -45,12 +50,12 @@ const Index = () => {
             <input
               type="text"
               placeholder="Search for groceries..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={localSearch}
+              onChange={(e) => { setLocalSearch(e.target.value); setGlobalSearch(""); }}
               className="w-full rounded-lg border bg-card py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
-          <VoiceSearchButton onResult={(text) => setSearch(text)} />
+          <VoiceSearchButton onResult={(text) => { setLocalSearch(text); setGlobalSearch(""); }} />
         </div>
 
         {/* Categories */}

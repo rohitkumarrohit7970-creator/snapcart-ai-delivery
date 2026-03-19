@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocationStore } from "@/lib/location-store";
 import { useAddresses } from "@/hooks/useAddresses";
+import { useSearchStore } from "@/lib/search-store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +36,7 @@ export function Navbar() {
   } = useLocationStore();
   const { data: addresses = [] } = useAddresses();
   const [locOpen, setLocOpen] = useState(false);
+  const { query: navSearch, setQuery: setNavSearch } = useSearchStore();
 
   // Auto-detect on mount if no address selected
   useEffect(() => {
@@ -73,10 +75,12 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Search for groceries..."
+              value={navSearch}
+              onChange={(e) => setNavSearch(e.target.value)}
               className="w-full rounded-lg border bg-background py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
-          <VoiceSearchButton onResult={(text) => { /* Desktop search is display-only for now */ }} />
+          <VoiceSearchButton onResult={(text) => setNavSearch(text)} />
         </div>
 
         <div className="flex items-center gap-2">
