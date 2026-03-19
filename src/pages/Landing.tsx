@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { ShoppingBag, Truck, ShieldCheck, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -49,9 +49,8 @@ export default function Landing() {
 
   // If already logged in, redirect based on role
   if (user) {
-    const destination = hasRole("admin") ? "/admin" : hasRole("delivery_boy") ? "/delivery" : "/";
-    navigate(destination, { replace: true });
-    return null;
+    const destination = hasRole("admin") ? "/admin" : hasRole("delivery_boy") ? "/delivery" : "/store";
+    return <Navigate to={destination} replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
