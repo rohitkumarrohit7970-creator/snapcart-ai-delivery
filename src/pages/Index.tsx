@@ -13,7 +13,11 @@ import { Search } from "lucide-react";
 const Index = () => {
   const { hasRole } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [search, setSearch] = useState("");
+  const { query: globalSearch, setQuery: setGlobalSearch } = useSearchStore();
+  const [localSearch, setLocalSearch] = useState("");
+  
+  // Combine mobile local search with navbar global search
+  const search = localSearch || globalSearch;
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: categories = [] } = useCategories();
 
